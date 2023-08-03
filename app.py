@@ -7,7 +7,8 @@ from models import *
 from datetime import datetime
 import os
 from datetime import datetime
-from sqlalchemy import desc
+from sqlalchemy import desc,or_
+
 
 from werkzeug.utils import secure_filename
 
@@ -179,7 +180,7 @@ def delete_category(category_id):
         return redirect(url_for('dashboard'))
     category = Category.query.get(category_id)
 
-    # Delete associated products before deleting the category (optional)
+    
     products = Product.query.filter_by(category_id=category_id).all()
     for product in products:
         db.session.delete(product)
@@ -339,8 +340,13 @@ def place_order():
     order = Order(user=current_user, products=cart_products)
     
     
+    products_to_remove = []
     for product in cart_products:
         product.number -= 1
+        products_to_remove.append(product)
+
+   
+    for product in products_to_remove:
         current_user.cart.products.remove(product)
 
     db.session.add(order)
@@ -348,6 +354,7 @@ def place_order():
     
     flash('Order placed successfully.')
     return redirect(url_for('show_orders'))
+
 
 # Route to view user's orders
 @app.route('/my-orders')
@@ -369,6 +376,26 @@ def show_orders():
 def logout():
     logout_user()
     return redirect(url_for('home'))
+
+
+# Route to search products
+@app.route('/search', methods=['GET', 'POST'])
+@login_required
+def search_products():
+    if request.method == 'POST':
+        search_query = request.form['search_query']
+        # Search for products with matching names or categories
+        products = Product.query.filter(or_(Product.name.ilike(f'%{search_query}%'),
+                                            Product.category.has(Category.name.ilike(f'%{search_query}%')))
+                                       ).all()
+        # Filter out expired products if the user is not an admin
+        if not current_user.is_admin:
+            products = [product for product in products if not product.expiry_date or product.expiry_date >= datetime.now().date()]
+        return render_template('search_results.html', products=products, search_query=search_query)
+    return redirect('search')
+
+
+
 
 
 if __name__ == '__main__':
