@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+
+{% block content %}
+{% from 'macros/product.html' import product_card %}
+<div class="container mt-5">
+    <div class="row justify-content-lg-start">
+       
+        {% for product in products %}
+        {{ product_card(product,category,current_user) }}
+        {% endfor %}
+        
+    </div>
+
+</div>
+
+{% endblock %}

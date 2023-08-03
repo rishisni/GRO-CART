@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+
+{% block content %}
+{% from 'macros/category.html' import category_card %}
+
+
+<div class="container mt-5">
+    <div class="row justify-content-lg-start">
+        
+        {% for category in categories %}
+        {% if category %}
+        {{ category_card(category) }}
+        {% else %}
+        <h5>No Category Created</h5>
+        {% endif %}
+        {% endfor %}
+       
+    </div>
+</div>
+
+{% endblock %}

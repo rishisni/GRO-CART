@@ -1,0 +1,103 @@
+{% extends "base.html" %}
+
+
+
+{% block content %}
+
+<section class="vh-100">
+    <div class="container h-100">
+        <div class="row d-flex justify-content-center align-items-center h-100">
+            <div class="col-lg-12 col-xl-11">
+                <div class="card text-black" style="border-radius: 25px;">
+                    <div class="card-body p-md-5">
+                        <div class="row justify-content-center">
+                            <div class="col-md-10 col-lg-6 col-xl-5 order-2 order-lg-1">
+
+                                <p class="text-center h1 fw-bold mb-5 mx-1 mx-md-4 mt-4">Add Product</p>
+
+                                <form class="mx-1 mx-md-4" method="POST" action="{{ url_for('add_product',category_id=category.id) }}" enctype="multipart/form-data">
+
+                                    <div class="d-flex flex-row align-items-center mb-4">
+                                        <i class="fas fa-tag fa-lg me-3 fa-fw"></i>
+                                        <div class="form-outline flex-fill mb-0">
+                                            <input type="text" id="name" name="name" class="form-control" placeholder="Product Name" required />
+                                        </div>
+                                    </div>
+
+                                    <div class="d-flex flex-row align-items-center mb-4">
+                                        <i class="fas fa-image fa-lg me-3 fa-fw"></i>
+                                        <div class="form-outline flex-fill mb-0">
+                                            <input type="file" id="image" name="photo" class="form-control" required />
+                                        </div>
+                                    </div>
+
+                                    <div class="d-flex flex-row align-items-center mb-4">
+                                        <i class="fas fa-dollar-sign fa-lg me-3 fa-fw"></i>
+                                        <div class="form-outline flex-fill mb-0">
+                                            <input type="number" step="0.01" id="price" name="price" class="form-control" placeholder="Price" required />
+                                        </div>
+                                    </div>
+
+                                    <div class="d-flex flex-row align-items-center mb-4">
+                                        <i class="fas fa-hashtag fa-lg me-3 fa-fw"></i>
+                                        <div class="form-outline flex-fill mb-0">
+                                            <input type="number" id="number" name="number" class="form-control" placeholder="No of Product in Stock" required />
+                                        </div>
+                                    </div>
+
+                                    <div class="d-flex flex-row align-items-center mb-4">
+                                        <i class="fas fa-calendar-alt fa-lg me-3 fa-fw"></i>
+                                        <div class="form-outline flex-fill mb-0">
+                                            <input type="date" id="manufacturing_date" name="manufacturing_date" class="form-control" placeholder="Manufacturing Date" required />
+                                        </div>
+                                    </div>
+
+                                    <div class="d-flex flex-row align-items-center mb-4">
+                                        <i class="fas fa-calendar-times fa-lg me-3 fa-fw"></i>
+                                        <div class="form-outline flex-fill mb-0">
+                                            <input type="date" id="expiry_date" name="expiry_date" class="form-control" placeholder="Expiry Date" required />
+                                        </div>
+                                    </div>
+
+                                    <div class="d-flex flex-row align-items-center mb-4">
+                                        <i class="fas fa-cubes fa-lg me-3 fa-fw"></i>
+                                        <div class="form-outline flex-fill mb-0">
+                                            <input type="number" step="0.01" id="quantity" name="quantity" class="form-control" placeholder="Quantity" required />
+                                        </div>
+                                    </div>
+
+                                    <div class="d-flex flex-row align-items-center mb-4">
+                                        <i class="fas fa-balance-scale fa-lg me-3 fa-fw"></i>
+                                        <div class="form-outline flex-fill mb-0">
+                                            <select class="form-select" id="quantity_unit" name="quantity_unit" required>
+                                                <option value="" disabled selected>Select Quantity Unit</option>
+                                                <option value="pieces">Pieces</option>
+                                                <option value="kg">kg</option>
+                                                <option value="mg">mg</option>
+                                                <option value="liters">L</option>
+                                                <option value="ml">ml</option>
+                                            </select>
+                                        </div>
+                                    </div>
+
+                                    <div class="d-flex justify-content-center mx-4 mb-3 mb-lg-4">
+                                        <button type="submit" class="btn btn-primary btn-lg">Add Product</button>
+                                    </div>
+
+                                </form>
+
+                            </div>
+                            <!-- <div class="col-md-10 col-lg-6 col-xl-7 d-flex align-items-center order-1 order-lg-2">
+
+                                <img src="https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-registration/draw1.webp"
+                                    class="img-fluid" alt="Sample image">
+
+                            </div> -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

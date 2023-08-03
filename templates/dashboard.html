@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+
+{% block content %}
+{% from 'macros/product.html' import product_card %}
+
+<!-- dashboard.html -->
+
+
+
+<div class="container mt-5">
+    {% for category in categories %}
+    <h2 class="text-center mb-4 mt-4" >{{ category.name }}</h2>
+    {% if products_dict[category.id] %}
+    <div class="row mt-2">
+        {% for product in products_dict[category.id] %}
+        {{ product_card(product,category,current_user) }}
+        {% endfor %}
+    </div>
+    {% else %}
+    <p>No products found for this category.</p>
+    {% endif %}
+    {% endfor %}
+</div>
+{% endblock %}

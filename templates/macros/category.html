@@ -1,0 +1,27 @@
+{% macro category_card(category) %}
+<div class="col-lg-3 col-md-6 col-sm-6 col-8 mb-4">
+    <div class="card" style="width: 16rem;">
+        <div class="card-body">
+            <h4 class="text-center card-title">{{ category.name }}</h4>
+            <div class="card-footer">
+                
+                <a href="{{ url_for('add_product', category_id=category.id) }}" class="btn btn-outline-success">
+                    <i class="fas fa-plus"></i>
+                </a>
+                <a href="{{ url_for('show_products', category_id=category.id) }}" class="btn btn-outline-success">
+                    <i class="fas fa-eye"></i>
+                </a>
+                <a href="{{ url_for('edit_category', category_id=category.id) }}" class="btn btn-outline-success">
+                    <i class="fas fa-edit"></i>
+                </a>
+                <form action="{{ url_for('delete_category', category_id=category.id) }}" method="POST"
+                    style="display: inline;">
+                    <button type="submit" class="btn btn-outline-success">
+                        <i class="fas fa-trash"></i>
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endmacro %}

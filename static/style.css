@@ -1,0 +1,28 @@
+#myCarousel {
+    margin: 0 auto;
+    width: 100%;
+    height: 50vh;
+}
+
+#myCarousel .carousel-inner .carousel-item img {
+    object-fit:cover;
+    width: 100%;
+    height: 50vh;
+}
+
+.bg-image {
+    background-image: url('/static/images/bg-image.png');
+   
+}
+
+.product-image {
+    width: 200px; /* Adjust the width as per your requirement */
+    height: 200px; /* Adjust the height as per your requirement */
+    overflow: hidden;
+}
+
+.product-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}

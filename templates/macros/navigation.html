@@ -1,0 +1,75 @@
+{% macro nav_item(url,fonts,name) -%}
+<li class="nav-item">
+    <a class="nav-link nav-link-big" href="{{ url }}">
+        <i class="{{fonts}}"></i>
+        <span>&nbsp;{{name}}</span>
+    </a>
+</li>
+{%- endmacro %}
+
+{% macro navigation(current_user,user) -%}
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <div class="container-fluid">
+        <a class="navbar-brand" href="#">E-Grocery</a>
+        <form class="d-flex">
+            <input class="form-control me-2" type="search" placeholder="Search by Category, Product"
+                aria-label="Search">
+            <button class="btn btn-outline-success" type="submit">Search</button>
+        </form>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
+
+
+            <ul class="navbar-nav ml-auto mr-2 ml-2">
+
+                
+
+
+                {% if current_user.is_authenticated and current_user.is_admin %}
+                {{ nav_item(url_for('add_category'),"fa fa-plus-circle","Add Category") }}
+                {{ nav_item(url_for('show_category'),"fa-solid fa-eye","Show Category") }}
+                {{ nav_item(url_for('add_category'),"fa-solid fa-chart-simple","Summary") }}
+                {{ nav_item(url_for('logout'),"fa fa-sign-out","Logout") }}
+               
+                {% endif %}
+
+                {% if current_user.is_authenticated and not current_user.is_admin %}
+               
+                {{ nav_item(url_for('dashboard'),"fas fa-home","Home") }}
+                {{ nav_item(url_for('show_cart'),"fa-solid fa-cart-shopping","My Cart") }}
+                {{ nav_item(url_for('show_orders'),"fas fa-receipt","My Orders") }}
+                {{ nav_item(url_for('logout'),"fa fa-sign-out","Logout") }}
+                {% endif %}
+
+                {% if not current_user.is_authenticated %}
+                {{ nav_item(url_for('register'),"fa fa-user-plus","Register") }}
+                <li class="nav-item dropdown mr-2">
+                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown"
+                      aria-expanded="false">
+                      <i class="fa-solid fa-user"></i>&nbsp; Login
+                    </a>
+                    <ul class="dropdown-menu mr-2" aria-labelledby="navbarDropdown">
+                      <li><a class="dropdown-item" href="{{url_for('login')}}">Customer</a></li>
+                      <li><a class="dropdown-item" href="{{url_for('manager_login')}}">Manager</a></li>
+                      
+                      
+                    </ul>
+                  </li>
+                {% endif %}
+            </ul>
+
+
+            
+
+        </div>
+
+
+
+    </div>
+
+</nav>
+
+{%- endmacro %}
