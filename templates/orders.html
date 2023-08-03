@@ -1,4 +1,4 @@
-<!-- orders.html -->
+
 
 {% extends 'base.html' %}
 
@@ -7,6 +7,11 @@
     <div class="row justify-content-center">
         <div class="col-xl-6 col-lg-7 col-md-8">
             <div class="container mt-5">
+                <div class="profile bg-light">
+                    <h5>Name : {{current_user.username}}</h5>
+                    <h5>Email :{{current_user.email}}</h5>
+                </div>
+                <h5 class="mt-4 mb-4">My Orders </h5>
                 {% if orders %}
                 {% for order in orders %}
                 <div class="card mb-3">
@@ -30,9 +35,9 @@
                 </div>
                 {% endfor %}
                 {% else %}
-                <p class="text-center mt-4">Your cart is empty.</p>
+                <p class="text-center mt-4">Your have not ordered yet.</p>
                 <div>
-                    <a href="{{ url_for('dashboard') }}" class="btn btn-outline-success">Buy Products</a>
+                    <a href="{{ url_for('dashboard') }}" class="btn btn-outline-success">Continue Shopping</a>
                 </div>
                 {% endif %}
             </div>

@@ -37,6 +37,7 @@ def home():
 
 
 #Route For Register
+# Route For Register
 @app.route('/register',methods=['GET','POST'])
 def register():
     if request.method =="POST":
@@ -45,14 +46,24 @@ def register():
         password = request.form['password']
         password_hash = generate_password_hash(password)
 
+        # Check if the username or email already exists in the database
+        existing_user = User.query.filter_by(username=username).first()
+        existing_email = User.query.filter_by(email=email).first()
+
+        if existing_user or existing_email:
+            flash('Username or email already exists. Please choose a different one.', 'danger')
+            return redirect('/register')
+
         new_user = User(username=username, password=password_hash,email=email)
         db.session.add(new_user)
         new_cart = Cart()
         new_user.cart = new_cart
         db.session.commit()
-        
+
+        flash('Registration successful! You can now log in.', 'success')
         return redirect('/login')
     return render_template('register.html')
+
     
 
 #Route For Login
@@ -63,21 +74,24 @@ def login():
         password = request.form['password']
         user = User.query.filter((User.username == identifier) | (
             User.email == identifier)).first()
-        if user and check_password_hash(user.password, password) and user.is_admin==0:
+        if user and check_password_hash(user.password, password) and user.is_admin == 0:
             login_user(user)
             if not user.cart:
                 new_cart = Cart()
                 user.cart = new_cart
                 db.session.commit()
             return redirect(url_for('dashboard'))
-
-        flash('Invalid username, email, or password.')
+        elif user and check_password_hash(user.password, password) and user.is_admin == 1:
+            flash('Manager login page. Please login through the manager login page.', 'warning')
+        else:
+            flash('Invalid username, email, or password.', 'danger')
         return redirect(url_for('login'))
 
     return render_template('login.html')
 
 
-#Route For Manager-Login
+
+# Route For Manager-Login
 @app.route('/manager-login',methods=['GET','POST'])
 def manager_login():
     if request.method == "POST":
@@ -85,14 +99,17 @@ def manager_login():
         password = request.form['password']
         user = User.query.filter((User.username == identifier) | (
             User.email == identifier)).first()
-        if user and check_password_hash(user.password, password) and user.is_admin ==1:
+        if user and check_password_hash(user.password, password) and user.is_admin == 1:
             login_user(user)
             return redirect(url_for('show_category'))
-
-        flash('Invalid username, email, or password.')
+        elif user and check_password_hash(user.password, password) and user.is_admin == 0:
+            flash('User login page. Please login through the user login page.', 'warning')
+        else:
+            flash('Invalid username, email, or password.', 'danger')
         return redirect(url_for('manager_login'))
 
     return render_template('manager_login.html')
+
 
 
 
@@ -384,11 +401,11 @@ def logout():
 def search_products():
     if request.method == 'POST':
         search_query = request.form['search_query']
-        # Search for products with matching names or categories
+        
         products = Product.query.filter(or_(Product.name.ilike(f'%{search_query}%'),
                                             Product.category.has(Category.name.ilike(f'%{search_query}%')))
                                        ).all()
-        # Filter out expired products if the user is not an admin
+        
         if not current_user.is_admin:
             products = [product for product in products if not product.expiry_date or product.expiry_date >= datetime.now().date()]
         return render_template('search_results.html', products=products, search_query=search_query)
@@ -396,7 +413,32 @@ def search_products():
 
 
 
+@app.route('/summary')
+@login_required
+def summary():
+    if not current_user.is_admin:
+        flash('You do not have permission to access this page.', 'warning')
+        return redirect(url_for('dashboard'))
+    categories = Category.query.all()
+
+    
+    products_dict = {}
+    for category in categories:
+        
+        products = Product.query.filter_by(category_id=category.id).order_by(desc(Product.timestamp_added)).all()
+        non_expired_products = [product for product in products if product.expiry_date >= datetime.now().date()]
+
+        products_dict[category.id] = non_expired_products
+    most_purchased_product, total_purchases = get_most_purchased_product()
+
+    
+    out_of_stock_products, expired_products = get_out_of_stock_or_expired_products()
+
+    return render_template('summary.html', categories=categories, products_dict=products_dict,
+                           most_purchased_product=most_purchased_product, total_purchases=total_purchases,
+                           out_of_stock_products=out_of_stock_products, expired_products=expired_products)
+
 
 
 if __name__ == '__main__':
-    app.run(debug=True,port=1045)
+    app.run(debug=True,port=1045,host="0.0.0.0")

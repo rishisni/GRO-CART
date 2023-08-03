@@ -1,0 +1,63 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="container mt-4">
+
+    <div class="row mt-4">
+        <div class="col-md-12">
+            <div class="card">
+                <div class="card-header">
+                    {% if most_purchased_product %}
+                    <h3>Most Purchased Product </h3>
+                    <li class="list-group-item"><strong>{{ most_purchased_product.name }}</strong> ({{ total_purchases }} purchases)</li>
+                    
+                    {% else %}
+                    <p>No purchases yet.</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row mt-4">
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="mb-0">Out of Stock Products</h3>
+                </div>
+                <div class="card-body">
+                    {% if out_of_stock_products %}
+                    <ul class="list-group">
+                        {% for product in out_of_stock_products %}
+                        <li class="list-group-item">{{ product.name }}</li>
+                        {% endfor %}
+                    </ul>
+                    {% else %}
+                    <p>No out of stock products.</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="mb-0">Expired Products</h3>
+                </div>
+                <div class="card-body">
+                    {% if expired_products %}
+                    <ul class="list-group">
+                        {% for product in expired_products %}
+                        <li class="list-group-item">{{ product.name }}</li>
+                        {% endfor %}
+                    </ul>
+                    {% else %}
+                    <p>No expired products.</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

@@ -27,7 +27,7 @@
                     class="fas fa-edit"></i></a>
             <form action="{{ url_for('delete_product', product_id=product.id) }}" method="POST"
                 style="display: inline;">
-                <button type="submit" class="btn btn-outline-success"><i class="fas fa-trash"></i></button>
+                <button type="submit" class="btn btn-outline-danger"><i class="fas fa-trash"></i></button>
             </form>
            
             {% else %}
@@ -56,13 +56,13 @@
 {% macro cart_product_card(product,category,current_user) %}
 <div class="card mt-4">
     <div class="row g-0">
-        <div class="col-sm-12 col-md-4 order-md-1 order-2">
+        <div class="col-sm-12 col-md-4 ">
             <div class="product-image">
                 <img src="{{ url_for('static', filename='uploads/product_images/' ~ product.photo) }}"
                     class="card-img-top" alt="{{ product.name }}">
             </div>
         </div>
-        <div class="col-sm-12 col-md-8 order-md-2 order-1">
+        <div class="col-sm-12 col-md-8 ">
             <div class="card-body">
                 <div class="d-flex justify-content-between">
                     <h5 class="card-title">{{ product.name }}</h5>
@@ -73,10 +73,12 @@
                     <p class="card-text">Manufacturing Date: {{ product.manufacturing_date.strftime('%Y-%m-%d') }}</p>
                     <p class="card-text">Expiry Date: {{ product.expiry_date.strftime('%Y-%m-%d') }}</p>
                 </div>
-
-                <form action="{{ url_for('remove_from_cart', product_id=product.id) }}" method="post">
-                    <button type="submit" class="btn btn-danger">Remove from Cart</button>
-                </form>
+                
+                <div class="col-sm-12 col-md-8 mt-5 justify-content-between d-flex">
+                    <form action="{{ url_for('remove_from_cart', product_id=product.id) }}" method="post">
+                        <button type="submit" class="btn btn-danger btn-block">Remove from Cart</button>
+                    </form>
+                </div>
 
             </div>
         </div>

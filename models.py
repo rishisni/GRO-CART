@@ -1,10 +1,9 @@
-from email.policy import default
-from xml.dom.pulldom import default_bufsize
 from flask_sqlalchemy import SQLAlchemy
 from flask import Flask
 from flask_login import UserMixin
 from datetime import datetime
 from flask_migrate import Migrate
+from sqlalchemy import func
 
 app = Flask(__name__)
 app.secret_key = 'SECRET_KEY'  
@@ -69,3 +68,25 @@ class CartProducts(db.Model):
 class OrderProducts(db.Model):
     order_id = db.Column(db.Integer, db.ForeignKey('order.id'), primary_key=True)
     product_id = db.Column(db.Integer, db.ForeignKey('product.id'), primary_key=True)
+
+
+def get_most_purchased_product():
+   
+    most_purchased_product = db.session.query(
+        OrderProducts.product_id, func.count(OrderProducts.product_id).label('total')
+    ).group_by(OrderProducts.product_id).order_by(func.count(OrderProducts.product_id).desc()).first()
+
+    if most_purchased_product:
+        product_id, total_purchases = most_purchased_product
+        most_purchased_product = Product.query.get(product_id)
+        return most_purchased_product, total_purchases
+    return None, 0
+
+
+def get_out_of_stock_or_expired_products():
+    out_of_stock_products = Product.query.filter(Product.number <= 0).all()
+    expired_products = Product.query.filter(Product.expiry_date < datetime.now().date()).all()
+    return out_of_stock_products, expired_products
+
+
+
