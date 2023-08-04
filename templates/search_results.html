@@ -6,9 +6,11 @@
     <div class="row justify-content-lg-start">
         <h1>Search Results for "{{ search_query }}"</h1>
         {% for product in products %}
-        {{ product_card(product,category,current_user) }}
+        <div class="col-lg-2 col-md-4 col-6 mb-4">
+            {{ product_card(product,category,current_user) }}
+        </div>
         {% endfor %}
-        
+
     </div>
 
 </div>

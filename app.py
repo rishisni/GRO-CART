@@ -33,7 +33,9 @@ def load_user(id):
 #Route For Homepage
 @app.route('/')
 def home():
-    return render_template('home.html')
+    most_favourite_products = get_most_favourite_products(current_user)
+    
+    return render_template('home.html',most_favourite_products=most_favourite_products)
 
 
 #Route For Register
@@ -80,7 +82,7 @@ def login():
                 new_cart = Cart()
                 user.cart = new_cart
                 db.session.commit()
-            return redirect(url_for('dashboard'))
+            return redirect(url_for('home'))
         elif user and check_password_hash(user.password, password) and user.is_admin == 1:
             flash('Manager login page. Please login through the manager login page.', 'warning')
         else:
@@ -120,6 +122,7 @@ def manager_login():
 @login_required
 def dashboard():
     categories = Category.query.all()
+    
 
     # Fetch products for each category and store them in a dictionary
     products_dict = {}
@@ -129,7 +132,7 @@ def dashboard():
         non_expired_products = [product for product in products if product.expiry_date >= datetime.now().date()]
 
         products_dict[category.id] = non_expired_products
-
+    
     return render_template('dashboard.html', categories=categories, products_dict=products_dict)
 
 
@@ -143,18 +146,27 @@ def add_category():
     if not current_user.is_admin:
         flash('You do not have permission to access this page.', 'warning')
         return redirect(url_for('dashboard'))
+    
     if request.method =="POST":
-
         name = request.form['name']
-        new_category =Category(name=name)
+        
+        # Check if the category name already exists in the database
+        existing_category = Category.query.filter_by(name=name).first()
+
+        if existing_category:
+            flash('Category name already exists. Please choose a different name.')
+            return redirect(url_for('add_category'))
+        
+        new_category = Category(name=name)
         db.session.add(new_category)
         db.session.commit()
 
-        flash('Category added successfully.')
+        flash('Category added successfully.', 'success')
 
         return redirect(url_for('show_category'))
 
-    return render_template('add_category.html',user=current_user)
+    return render_template('add_category.html', user=current_user)
+
 
 
 #Route to Show Category
@@ -176,12 +188,21 @@ def edit_category(category_id):
     if not current_user.is_admin:
         flash('You do not have permission to access this page.', 'warning')
         return redirect(url_for('dashboard'))
+    
     if request.method == 'POST':
         name = request.form['name']
+        
+        # Check if the category name already exists in the database
+        existing_category = Category.query.filter(Category.id != category.id, Category.name == name).first()
+
+        if existing_category:
+            flash('Category name already exists. Please choose a different name.', 'danger')
+            return redirect(url_for('edit_category', category_id=category_id))
+        
         category.name = name
         db.session.commit()
 
-        flash('Category updated successfully.')
+        flash('Category updated successfully.', 'success')
 
         return redirect(url_for('show_category'))
 
@@ -289,9 +310,7 @@ def edit_product(product_id):
 @app.route('/show-products/<int:category_id>')
 @login_required
 def show_products(category_id):
-    # if not current_user.is_admin:
-    #     flash('You do not have permission to access this page.', 'warning')
-    #     return redirect(url_for('dashboard'))
+   
     category = Category.query.get(category_id)
     products = Product.query.filter_by(category_id=category_id).all()
     return render_template('show_products.html', category=category, products=products)
@@ -325,7 +344,7 @@ def add_to_cart(product_id):
     current_user.cart.products.append(product)
     db.session.commit()
     flash('Product added to cart successfully.')
-    return redirect(url_for('show_products', category_id=product.category_id))
+    return redirect(url_for('dashboard', category_id=product.category_id))
 
 # Route to remove a product from the cart
 @app.route('/remove-from-cart/<int:product_id>', methods=['POST'])
@@ -335,7 +354,7 @@ def remove_from_cart(product_id):
     current_user.cart.products.remove(product)
     db.session.commit()
     flash('Product removed from cart successfully.')
-    return redirect(url_for('show_cart'))
+    return redirect(url_for('dashboard',category_id=product.category_id))
 
 # Route to view the cart
 @app.route('/cart')
@@ -433,7 +452,7 @@ def summary():
 
     
     out_of_stock_products, expired_products = get_out_of_stock_or_expired_products()
-
+    
     return render_template('summary.html', categories=categories, products_dict=products_dict,
                            most_purchased_product=most_purchased_product, total_purchases=total_purchases,
                            out_of_stock_products=out_of_stock_products, expired_products=expired_products)
@@ -443,4 +462,4 @@ def summary():
 
 
 if __name__ == '__main__':
-    app.run(debug=True,port=1045,host="0.0.0.0")
+    app.run(debug=True,port=3000,host="0.0.0.0")

@@ -10,14 +10,15 @@
     <div class="row">
        
         <div class="col-12 d-flex overflow-auto">
+            <br>
             <div class="btn-group btn-group-sm category-btn-group" role="group" aria-label="Categories">
-                <button type="button" class="btn btn-primary category-btn " data-category="all">All Products</button>
+                <button type="button" class="btn btn-light category-btn active-category" data-category="all">All Products</button>
                 {% for category in categories %}
-                <button type="button" class="btn btn-secondary category-btn" data-category="{{ category.id }}">{{
-                    category.name }}</button>
+                <button type="button" class="btn btn-light category-btn" data-category="{{ category.id }}">{{ category.name }}</button>
                 {% endfor %}
             </div>
         </div>
+        
         
     </div>
 </div>
@@ -29,19 +30,21 @@
         <div class="row category-products" id="category-{{ category.id }}">
             {% if category.id == 'all' %}
             {% for product in all_products %}
-            <div class="col-lg-2 col-md-3 col-sm-4 col-6 mb-4">
+            <div class="col-lg-2 col-md-4 col-6 mb-4 mr-1 ml-1">
                 {{ product_card(product, current_user) }}
             </div>
             {% endfor %}
-            {% elif products_dict[category.id] %}
+            {% endif %}
+            {% if products_dict[category.id] %}
+            <h2 class="text-center">{{ category.name }}</h2>
             {% for product in products_dict[category.id] %}
-            <div class="col-lg-3 col-md-6 col-sm-6 col-12">
+            <div class="col-lg-2 col-md-4 col-6 mb-4">
                 {{ product_card(product, category, current_user) }}
             </div>
             {% else %}
             <p>No products found for this category.</p>
             {% endfor %}
-
+            
             {% endif %}
         </div>
     </div>
@@ -55,6 +58,9 @@
             const categoryId = $(this).data("category");
             $(".category-products").hide();
 
+            $(".category-btn").removeClass("active-category"); // Remove active class from all buttons
+            $(this).addClass("active-category"); // Add active class to clicked button
+
             if (categoryId === "all") {
                 $(".category-products").show();
             } else {
@@ -63,5 +69,6 @@
         });
     });
 </script>
+
 
 {% endblock %}

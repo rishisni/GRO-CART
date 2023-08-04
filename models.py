@@ -3,7 +3,7 @@ from flask import Flask
 from flask_login import UserMixin
 from datetime import datetime
 from flask_migrate import Migrate
-from sqlalchemy import func
+from sqlalchemy import func,desc
 
 app = Flask(__name__)
 app.secret_key = 'SECRET_KEY'  
@@ -87,6 +87,17 @@ def get_out_of_stock_or_expired_products():
     out_of_stock_products = Product.query.filter(Product.number <= 0).all()
     expired_products = Product.query.filter(Product.expiry_date < datetime.now().date()).all()
     return out_of_stock_products, expired_products
+
+
+def get_most_favourite_products(user=None):
+    query = db.session.query(Product).join(OrderProducts).join(Order)
+
+    if user and not user.is_anonymous:
+        query = query.filter(Order.user_id == user.id)
+
+    most_favourite_products = query.group_by(Product.id).order_by(func.count(OrderProducts.product_id).desc()).limit(2).all()
+
+    return most_favourite_products
 
 
 

@@ -20,7 +20,7 @@
                     <div class="d-flex flex-row align-items-center mb-4">
                       <i class="fas fa-user fa-lg me-3 fa-fw"></i>
                       <div class="form-outline flex-fill mb-0">
-                        <input type="text" id="form3Example1c" name="username" placeholder="Username" class="form-control" />
+                        <input type="text" id="form3Example1c" name="username" placeholder="Username" pattern="[a-zA-Z0-9_]+" title="Username can only contain letters, digits and underscore." class="form-control" required/>
                       
                       </div>
                     </div>
@@ -28,7 +28,7 @@
                     <div class="d-flex flex-row align-items-center mb-4">
                       <i class="fas fa-envelope fa-lg me-3 fa-fw"></i>
                       <div class="form-outline flex-fill mb-0">
-                        <input type="email" id="form3Example3c" name="email" class="form-control"  placeholder="Email Id"/>
+                        <input type="email" id="form3Example3c" name="email" class="form-control"  placeholder="Email Id" required/>
                      
                       </div>
                     </div>
@@ -36,7 +36,7 @@
                     <div class="d-flex flex-row align-items-center mb-4">
                       <i class="fas fa-lock fa-lg me-3 fa-fw"></i>
                       <div class="form-outline flex-fill mb-0">
-                        <input type="password" id="form3Example4c" name="password" class="form-control"  placeholder="Password"/>
+                        <input type="password" id="form3Example4c" name="password" class="form-control"  placeholder="Password"title="Password should have minimum 8 characters." minlength="8" required />
                        
                       </div>
                     </div>

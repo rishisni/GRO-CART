@@ -10,7 +10,7 @@
 {% macro navigation(current_user,user) -%}
 <nav id="myNavbar" class="navbar navbar-expand-lg navbar-light ">
     <div class="container-fluid">
-        <img src="/static/images/logo.png" alt="E-Grocery" class="logo-img" style="width: 150px; height: 50px;">
+        <img src="/static/images/logo.png" alt="E-Grocery" class="logo-img" style="width: 180px; height: 50px;">
         <!-- <a class="navbar-brand" href="#">E-Grocery</a> -->
         <form action="/search" method="post">
             <div class="input-group">
@@ -40,14 +40,15 @@
 
                 {% if current_user.is_authenticated and not current_user.is_admin %}
                
-                {{ nav_item(url_for('dashboard'),"fas fa-home","Home") }}
-                {{ nav_item(url_for('show_cart'),"fa-solid fa-cart-shopping","My Cart") }}
+                {{ nav_item(url_for('home'),"fas fa-home","Home") }}
+                {{ nav_item(url_for('dashboard'),"fa-solid fa-cart-shopping","Products") }}
+                {{ nav_item(url_for('show_cart'),"fa-solid fa-bag-shopping","My Cart") }}
                 {{ nav_item(url_for('show_orders'),"fas fa-user","Profile") }}
                 {{ nav_item(url_for('logout'),"fa fa-sign-out","Logout") }}
                 {% endif %}
 
                 {% if not current_user.is_authenticated %}
-                {{ nav_item(url_for('register'),"fa fa-user-plus","Register") }}
+                
                 <li class="nav-item dropdown mr-2">
                     <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown"
                       aria-expanded="false">
@@ -60,6 +61,7 @@
                       
                     </ul>
                   </li>
+                  {{ nav_item(url_for('register'),"fa fa-user-plus","Register") }}
                 {% endif %}
             </ul>
 

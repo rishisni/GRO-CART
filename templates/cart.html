@@ -12,19 +12,25 @@
                 {% endfor %}
 
                 {% if cart_products %}
-
+                
                
                 <div class="d-flex justify-content-between align-items-center mt-4" style="background-color: white;">
+                   
+                    
                     <div>
                         <a href="{{ url_for('dashboard') }}" class="btn btn-outline-success">Continue Shopping</a>
                     </div>
-                    <div class="text-end mr-2">
-                        <p>Total Price: {{ total_price }}</p>
+                    <div class="text-end mt-2">
+                        <h5> <i class="fa-solid fa-indian-rupee-sign"></i>&nbsp;{{ total_price }}</h5>
+                        <br> <br>
+                    </div>
+                    <div>
                         <form action="/place-order" method="post">
                             <button type="submit" class="btn btn-outline-success">Place Order</button>
                         </form>
                     </div>
                 </div>
+                
                 
 
 
