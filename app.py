@@ -289,9 +289,9 @@ def edit_product(product_id):
 @app.route('/show-products/<int:category_id>')
 @login_required
 def show_products(category_id):
-    if not current_user.is_admin:
-        flash('You do not have permission to access this page.', 'warning')
-        return redirect(url_for('dashboard'))
+    # if not current_user.is_admin:
+    #     flash('You do not have permission to access this page.', 'warning')
+    #     return redirect(url_for('dashboard'))
     category = Category.query.get(category_id)
     products = Product.query.filter_by(category_id=category_id).all()
     return render_template('show_products.html', category=category, products=products)
@@ -437,6 +437,8 @@ def summary():
     return render_template('summary.html', categories=categories, products_dict=products_dict,
                            most_purchased_product=most_purchased_product, total_purchases=total_purchases,
                            out_of_stock_products=out_of_stock_products, expired_products=expired_products)
+
+
 
 
 

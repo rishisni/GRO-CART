@@ -1,53 +1,61 @@
 {% macro product_card(product, category, current_user) %}
-<div class="col-lg-3 col-md-6 col-sm-6 col-12 mb-4">
-    <div class="card" style="width: 14rem;">
-        <div class="product-image">
-            <img src="{{ url_for('static', filename='uploads/product_images/' ~ product.photo) }}" class="card-img-top"
-                alt="{{ product.name }}">
-        </div>
+
+    <div class="col-lg-3 col-md-6 col-sm-6 col-12 mb-4">
+
+        <div class="card" style="width: 14rem;">
+            <div class="product-image">
+                <img src="{{ url_for('static', filename='uploads/product_images/' ~ product.photo) }}"
+                    class="card-img-top" alt="{{ product.name }}">
+            </div>
 
 
-        <div class="card-body">
-            <h5 class="card-title">{{ product.name }}</h5>
-            <p class="card-text">Price: {{ product.price }}</p>
-            <p class="card-text">Quantity: {{ product.quantity }} {{ product.quantity_unit }}</p>
-            <a href="#collapse_{{ product.id }}" class="" data-bs-toggle="collapse"><i
+            <div class="card-body">
+                <h5 class="card-title">{{ product.name }}</h5>
+
+                <p class="card-text">{{ product.quantity }} {{ product.quantity_unit }}</p>
+                <a href="#collapse_{{ product.id }}" class="" style="text-decoration:none" data-bs-toggle="collapse"> View Details <i
                     class="fa-solid fa-arrow-down"></i></a>
-            <div id="collapse_{{ product.id }}" class="collapse">
-                <p class="card-text">Mfg. Date: {{ product.manufacturing_date }}</p>
-                <p class="card-text">Exp. Date: {{ product.expiry_date }}</p>
+                <div id="collapse_{{ product.id }}" class="collapse">
+                    <p class="card-text">Mfg. Date: {{ product.manufacturing_date }}</p>
+                    <p class="card-text">Exp. Date: {{ product.expiry_date }}</p>
 
-                <p class="card-text">Product in Stock: {{ product.number }}</p>
+                    <p class="card-text">Product in Stock: {{ product.number }}</p>
+                </div>
+            </div>
+            <div class="card-footer">
+                {% if current_user.is_admin %}
+
+                <a href="{{ url_for('edit_product', product_id=product.id) }}" class="btn btn-outline-success"><i
+                        class="fas fa-edit"></i></a>
+                <form action="{{ url_for('delete_product', product_id=product.id) }}" method="POST"
+                    style="display: inline;">
+                    <button type="submit" class="btn btn-outline-danger"><i class="fas fa-trash"></i></button>
+                </form>
+
+                {% else %}
+                {% if product in current_user.cart.products %}
+                <form action="{{ url_for('remove_from_cart', product_id=product.id) }}" method="post">
+                    <button class="btn btn-outline-danger" type="submit">Remove from Cart</button>
+                </form>
+                {% else %}
+                {% if product.number == 0 %}
+                <button class="btn btn-outline-disabled">Out Of Stock</button>
+                {% else %}
+
+                <div class="d-flex justify-content-between align-items-center">
+                    <span class="mr-2"><i class="fa-solid fa-indian-rupee-sign"></i>&nbsp;{{ product.price }}</span>
+                    <form action="{{ url_for('add_to_cart', product_id=product.id) }}" method="post">
+                        <button class="btn btn-outline-success" type="submit"><i class="fa-solid fa-plus"></i></button>
+                    </form>
+                </div>
+
+                {% endif %}
+                {% endif %}
+                {% endif %}
             </div>
         </div>
-        <div class="card-footer">
-            {% if current_user.is_admin %}
-            
-            <a href="{{ url_for('edit_product', product_id=product.id) }}" class="btn btn-outline-success"><i
-                    class="fas fa-edit"></i></a>
-            <form action="{{ url_for('delete_product', product_id=product.id) }}" method="POST"
-                style="display: inline;">
-                <button type="submit" class="btn btn-outline-danger"><i class="fas fa-trash"></i></button>
-            </form>
-           
-            {% else %}
-            {% if product in current_user.cart.products %}
-            <form action="{{ url_for('remove_from_cart', product_id=product.id) }}" method="post">
-                <button class="btn btn-outline-danger" type="submit">Remove from Cart</button>
-            </form>
-            {% else %}
-            {% if product.number == 0 %}
-            <button class="btn btn-outline-disabled">Out Of Stock</button>
-            {% else %}
-            <form action="{{ url_for('add_to_cart', product_id=product.id) }}" method="post">
-                <button class="btn btn-outline-success" type="submit">Add to Cart</button>
-            </form>
-            {% endif %}
-            {% endif %}
-            {% endif %}
-        </div>
     </div>
-</div>
+
 {% endmacro %}
 
 
@@ -66,19 +74,20 @@
             <div class="card-body">
                 <div class="d-flex justify-content-between">
                     <h5 class="card-title">{{ product.name }}</h5>
-                    <p class="card-text">Price: {{ product.price }}</p>
-                    <p class="card-text">Quantity: {{ product.quantity }} {{product.quantity_unit}}</p>
+                    <p class="card-text"><i class="fa-solid fa-indian-rupee-sign"></i>&nbsp; {{ product.price }}</p>
+                    <p class="card-text">{{ product.quantity }} {{product.quantity_unit}}</p>
                 </div>
                 <div class="d-flex justify-content-between">
                     <p class="card-text">Manufacturing Date: {{ product.manufacturing_date.strftime('%Y-%m-%d') }}</p>
                     <p class="card-text">Expiry Date: {{ product.expiry_date.strftime('%Y-%m-%d') }}</p>
                 </div>
-                
-                <div class="col-sm-12 col-md-8 mt-5 justify-content-between d-flex">
+
+                <div class="col-sm-12 col-md-8 mt-2 justify-content-between d-flex">
                     <form action="{{ url_for('remove_from_cart', product_id=product.id) }}" method="post">
                         <button type="submit" class="btn btn-danger btn-block">Remove from Cart</button>
                     </form>
                 </div>
+                
 
             </div>
         </div>

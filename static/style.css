@@ -1,3 +1,30 @@
+#myNavbar {
+    /* background-color:  #fdf9f6; */
+    background-color:#f1f6ec;
+    border-bottom: 1.5px solid #03480344;
+}
+
+
+
+.nav-link-big {
+    font-size: 15px;
+    transition: color 0.10s;
+    /* color: #5d3914; */
+    color:#002D62;
+    /* color: rgb(4, 134, 240); */
+}
+
+.nav-link-big:hover {
+    color: #7A9D54;
+}
+.nav-item:hover{
+    /* background-color: #ddd2c8; */
+    background-color: #F2EE9D;
+    border-radius: 4px;
+    transition: border 0.3;
+    transition: background-color 0.3s;
+}
+
 #myCarousel {
     margin: 0 auto;
     width: 100%;
@@ -17,7 +44,7 @@
 
 .product-image {
     width: 220px; /* Adjust the width as per your requirement */
-    height: 200px; /* Adjust the height as per your requirement */
+    height: 150px; /* Adjust the height as per your requirement */
     overflow: hidden;
     border-radius: 2px;
     padding: 4px;
@@ -26,5 +53,38 @@
 .product-image img {
     width: 100%;
     height: 100%;
-    object-fit: cover;
+    object-fit: fill;
+}
+
+
+.flash-messages {
+    position: fixed;
+    top: 100px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+}
+
+.flash-message {
+    position: fixed;
+    margin: 10px;
+    padding: 10px;
+    border-radius: 5px;
+    background: transparent;
+    position: fixed;
+}
+
+.close-button {
+    background-color: transparent;
+    border: none;
+    color: #888;
+    cursor: pointer;
+    font-size: 18px;
+    font-weight: bold;
+    position: absolute;
+    top: 5px;
+    right: 5px;
 }

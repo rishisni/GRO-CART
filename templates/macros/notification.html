@@ -1,7 +1,63 @@
 
-{% macro notification(message) %}
-  <div class="alert alert- alert-dismissible fade show" role="alert">
-    {{ message }}
-    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-  </div>
-{% endmacro %}
+{% macro notification(message) -%}
+
+    
+
+
+{% with messages = get_flashed_messages() %}
+{% if messages %}
+    <div class="flash-messages">
+        {% for message in messages %}
+            <div class="flash-message">
+                <p>{{ message }}</p>
+                <button class="close-button" onclick="closeFlashMessage(this)">&times;</button>
+            </div>
+        {% endfor %}
+    </div>
+{% endif %}
+{% endwith %}
+
+<script>
+function closeFlashMessage(button) {
+    var flashMessage = button.parentNode;
+    flashMessage.style.display = 'none';
+}
+</script>
+
+<style>
+.flash-messages {
+    position: fixed;
+    top: 100px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+}
+
+.flash-message {
+    position: fixed;
+    margin: 10px;
+    padding: 10px;
+    border-radius: 5px;
+    background: transparent;
+    position: fixed;
+}
+
+.close-button {
+    background-color: transparent;
+    border: none;
+    color: #888;
+    cursor: pointer;
+    font-size: 18px;
+    font-weight: bold;
+    position: absolute;
+    top: 5px;
+    right: 5px;
+}
+</style>
+
+
+
+{%- endmacro %}

@@ -3,22 +3,65 @@
 {% block content %}
 {% from 'macros/product.html' import product_card %}
 
-<!-- dashboard.html -->
 
 
 
 <div class="container mt-5">
-    {% for category in categories %}
-    <h2 class="text-center mb-4 mt-4" >{{ category.name }}</h2>
-    {% if products_dict[category.id] %}
-    <div class="row mt-2">
-        {% for product in products_dict[category.id] %}
-        {{ product_card(product,category,current_user) }}
-        {% endfor %}
+    <div class="row">
+       
+        <div class="col-12 d-flex overflow-auto">
+            <div class="btn-group btn-group-sm category-btn-group" role="group" aria-label="Categories">
+                <button type="button" class="btn btn-primary category-btn " data-category="all">All Products</button>
+                {% for category in categories %}
+                <button type="button" class="btn btn-secondary category-btn" data-category="{{ category.id }}">{{
+                    category.name }}</button>
+                {% endfor %}
+            </div>
+        </div>
+        
     </div>
-    {% else %}
-    <p>No products found for this category.</p>
-    {% endif %}
+</div>
+
+<div class="container mt-5">
+    {% for category in categories %}
+    <div class="mb-4">
+        <!-- <h2 class="text-center">{{ category.name }}</h2> -->
+        <div class="row category-products" id="category-{{ category.id }}">
+            {% if category.id == 'all' %}
+            {% for product in all_products %}
+            <div class="col-lg-2 col-md-3 col-sm-4 col-6 mb-4">
+                {{ product_card(product, current_user) }}
+            </div>
+            {% endfor %}
+            {% elif products_dict[category.id] %}
+            {% for product in products_dict[category.id] %}
+            <div class="col-lg-3 col-md-6 col-sm-6 col-12">
+                {{ product_card(product, category, current_user) }}
+            </div>
+            {% else %}
+            <p>No products found for this category.</p>
+            {% endfor %}
+
+            {% endif %}
+        </div>
+    </div>
     {% endfor %}
 </div>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+    $(document).ready(function () {
+        $(".category-btn").click(function () {
+            const categoryId = $(this).data("category");
+            $(".category-products").hide();
+
+            if (categoryId === "all") {
+                $(".category-products").show();
+            } else {
+                $(`#category-${categoryId}`).show();
+            }
+        });
+    });
+</script>
+
 {% endblock %}

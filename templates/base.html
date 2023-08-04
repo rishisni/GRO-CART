@@ -16,9 +16,13 @@
   
 </head>
 {% from 'macros/navigation.html' import navigation %}
+{% from 'macros/notification.html' import notification %}
+
 <body class="bg-image">
   {{ navigation(current_user,user ) }}
- 
+  <div>
+    {{notification(message) }}
+  </div>
 </body >
 {% block content %}
 
