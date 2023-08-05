@@ -47,15 +47,13 @@
             {% if current_user.is_authenticated %}
 
             <div class="col-lg-12 mt-4">
-                <h3 class="text-center">Your Favourite Picks</h3>
+                <h3 class="">Your Favourite Picks</h3>
                 {% if most_favourite_products %}
-                <div class="row d-flex justify-content-start">
+                <div class="d-flex flex-wrap justify-content-start ">
                     {% for product in most_favourite_products %}
-                    <div class="col-lg-6 col-md-4 col-sm-6 mb-4 mt-2">
-                        <div class="mx-5">
+                    
                             {{ product_card(product, category, current_user) }}
-                        </div>
-                    </div>
+                        
                     {% endfor %}
                 </div>
                 {% else %}

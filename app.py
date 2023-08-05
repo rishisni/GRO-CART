@@ -461,16 +461,20 @@ def logout():
 def search_products():
     if request.method == 'POST':
         search_query = request.form['search_query']
-        
-        products = Product.query.filter(or_(Product.name.ilike(f'%{search_query}%'),
-                                            Product.category.has(Category.name.ilike(f'%{search_query}%')))
-                                       ).all()
-        
+
+        products = Product.query.filter(
+            or_(
+                Product.name.ilike(f'%{search_query}%'),
+                Product.category.has(Category.name.ilike(f'%{search_query}%')),
+                func.cast(Product.price, db.String).ilike(f'%{search_query}%'),  # Search by price as a string
+                Product.manufacturing_date.ilike(f'%{search_query}%')  # Search by manufacturing date
+            )
+        ).all()
+
         if not current_user.is_admin:
             products = [product for product in products if not product.expiry_date or product.expiry_date >= datetime.now().date()]
         return render_template('search_results.html', products=products, search_query=search_query)
     return redirect('search')
-
 
 @app.route('/summary')
 @login_required

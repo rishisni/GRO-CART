@@ -3,16 +3,17 @@
 {% block content %}
 {% from 'macros/product.html' import product_card %}
 <div class="container mt-5">
-    <div class="row justify-content-lg-start">
-        <h1>Search Results for "{{ search_query }}"</h1>
-        {% for product in products %}
-        <div class="col-lg-2 col-md-4 col-6 mb-4">
-            {{ product_card(product,category,current_user) }}
+    <h1>Search Results for "{{ search_query }}"</h1>
+    {% if products %}
+        <div class="d-flex flex-wrap justify-content-start ">
+            {% for product in products %}
+                {{ product_card(product, category, current_user) }}
+            {% endfor %}
         </div>
-        {% endfor %}
-
-    </div>
-
+    {% else %}
+        <p>No search results found for "{{ search_query }}".</p>
+    {% endif %}
 </div>
+
 
 {% endblock %}
