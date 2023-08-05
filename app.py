@@ -446,15 +446,6 @@ def update_quantity(product_id):
     return redirect(url_for('show_cart'))
 
 
-
-# Route to Logout
-@app.route('/logout')
-@login_required
-def logout():
-    logout_user()
-    return redirect(url_for('home'))
-
-
 # Route to search products
 @app.route('/search', methods=['GET', 'POST'])
 @login_required
@@ -466,8 +457,8 @@ def search_products():
             or_(
                 Product.name.ilike(f'%{search_query}%'),
                 Product.category.has(Category.name.ilike(f'%{search_query}%')),
-                func.cast(Product.price, db.String).ilike(f'%{search_query}%'),  # Search by price as a string
-                Product.manufacturing_date.ilike(f'%{search_query}%')  # Search by manufacturing date
+                func.cast(Product.price, db.String).ilike(f'%{search_query}%'),  
+                Product.manufacturing_date.ilike(f'%{search_query}%')  
             )
         ).all()
 
@@ -476,6 +467,8 @@ def search_products():
         return render_template('search_results.html', products=products, search_query=search_query)
     return redirect('search')
 
+
+#Route For Summary 
 @app.route('/summary')
 @login_required
 def summary():
@@ -500,6 +493,13 @@ def summary():
                            out_of_stock_products=out_of_stock_products, expired_products=expired_products)
 
 
+
+# Route to Logout
+@app.route('/logout')
+@login_required
+def logout():
+    logout_user()
+    return redirect(url_for('home'))
 
 
 if __name__ == '__main__':
