@@ -8,10 +8,35 @@
         <div class="col-md-12">
             <div class="card">
                 <div class="card-header">
-                    {% if most_purchased_product %}
-                    <h3>Most Purchased Product </h3>
-                    <li class="list-group-item"><strong>{{ most_purchased_product.name }}</strong> ({{ total_purchases }} purchases)</li>
-                    
+                    {% if most_purchased_products %}
+                    <h3 class="text-center">Most Purchased Products</h3>
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>Product ID</th>
+                                <th>Category Name</th>
+                                <th>Product Name</th>
+                                
+                                <th>Total Purchases</th>
+                                <th>Edit</th>
+
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for product, total_purchases in most_purchased_products %}
+                            <tr>
+                                <td>{{ product.id }}</td>
+                                <td>{{product.category.name}}</td>
+                                <td>{{ product.name }}</td>
+                                
+                                <td>{{ total_purchases }}</td>
+                                <td>
+                                    <a href="{{ url_for('edit_product', product_id=product.id) }}" class="btn btn-outline-success btn-sm"><i class="fas fa-edit"></i> </a>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
                     {% else %}
                     <p>No purchases yet.</p>
                     {% endif %}
@@ -19,45 +44,81 @@
             </div>
         </div>
     </div>
+    
 
     <div class="row mt-4">
-        <div class="col-md-6">
+        <div class="col-md-12">
             <div class="card">
                 <div class="card-header">
-                    <h3 class="mb-0">Out of Stock Products</h3>
+                    <h3 class="mb-0 text-center">Out of Stock Products</h3>
                 </div>
                 <div class="card-body">
                     {% if out_of_stock_products %}
-                    <ul class="list-group">
-                        {% for product in out_of_stock_products %}
-                        <li class="list-group-item">{{ product.name }}</li>
-                        {% endfor %}
-                    </ul>
+                    <table class="table ">
+                        <thead>
+                            <tr>
+                                <th>Product ID</th>
+                                <th>Category Name</th>
+                                <th>Product Name</th>
+                                <th>Edit</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for product in out_of_stock_products %}
+                            <tr>
+                                <td>{{ product.id }}</td>
+                                <td>{{ product.category.name }}</td>
+                                <td>{{ product.name }}</td>
+                                <td>
+                                    <a href="{{ url_for('edit_product', product_id=product.id) }}" class="btn btn-outline-success btn-sm"><i class="fas fa-edit"></i> </a>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
                     {% else %}
                     <p>No out of stock products.</p>
                     {% endif %}
                 </div>
             </div>
         </div>
-        <div class="col-md-6">
-            <div class="card">
-                <div class="card-header">
-                    <h3 class="mb-0">Expired Products</h3>
-                </div>
-                <div class="card-body">
-                    {% if expired_products %}
-                    <ul class="list-group">
+    </div>
+    
+    <div class="col-md-12 mt-4">
+        <div class="card">
+            <div class="card-header">
+                <h3 class="mb-0 text-center">Expired Products</h3>
+            </div>
+            <div class="card-body">
+                {% if expired_products %}
+                <table class="table ">
+                    <thead>
+                        <tr>
+                            <th>Product ID</th>
+                            <th>Category Name</th>
+                            <th>Product Name</th>
+                            <th>Edit</th>
+                        </tr>
+                    </thead>
+                    <tbody>
                         {% for product in expired_products %}
-                        <li class="list-group-item">{{ product.name }}</li>
+                        <tr>
+                            <td>{{ product.id }}</td>
+                            <td>{{ product.category.name }}</td>
+                            <td>{{ product.name }}</td>
+                            <td>
+                                <a href="{{ url_for('delete_product', product_id=product.id) }}" class="btn btn-outline-danger btn-sm"><i class="fas fa-trash"></i> </a>
+                            </td>
+                        </tr>
                         {% endfor %}
-                    </ul>
-                    {% else %}
-                    <p>No expired products.</p>
-                    {% endif %}
-                </div>
+                    </tbody>
+                </table>
+                {% else %}
+                <p>No expired products.</p>
+                {% endif %}
             </div>
         </div>
     </div>
+    
 </div>
-
 {% endblock %}

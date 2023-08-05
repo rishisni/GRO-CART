@@ -122,12 +122,9 @@ def manager_login():
 @login_required
 def dashboard():
     categories = Category.query.all()
-    
-
-    # Fetch products for each category and store them in a dictionary
     products_dict = {}
     for category in categories:
-        # Get all products for the category and filter out expired products
+       
         products = Product.query.filter_by(category_id=category.id).order_by(desc(Product.timestamp_added)).all()
         non_expired_products = [product for product in products if product.expiry_date >= datetime.now().date()]
 
@@ -149,8 +146,6 @@ def add_category():
     
     if request.method =="POST":
         name = request.form['name']
-        
-        # Check if the category name already exists in the database
         existing_category = Category.query.filter_by(name=name).first()
 
         if existing_category:
@@ -192,7 +187,7 @@ def edit_category(category_id):
     if request.method == 'POST':
         name = request.form['name']
         
-        # Check if the category name already exists in the database
+       
         existing_category = Category.query.filter(Category.id != category.id, Category.name == name).first()
 
         if existing_category:
@@ -341,47 +336,71 @@ def delete_product(product_id):
 @login_required
 def add_to_cart(product_id):
     product = Product.query.get(product_id)
-    current_user.cart.products.append(product)
-    db.session.commit()
-    flash('Product added to cart successfully.')
-    return redirect(url_for('dashboard', category_id=product.category_id))
+    if product:
+        product.no_of_buyed = 1 
+        current_user.cart.products.append(product)
+        db.session.commit()
+        flash('Product added to cart successfully.')
+        return redirect(url_for('dashboard', category_id=product.category_id))
+    else:
+        flash('Product not found.')
+        return redirect(url_for('dashboard'))
+
 
 # Route to remove a product from the cart
 @app.route('/remove-from-cart/<int:product_id>', methods=['POST'])
 @login_required
 def remove_from_cart(product_id):
     product = Product.query.get(product_id)
-    current_user.cart.products.remove(product)
-    db.session.commit()
-    flash('Product removed from cart successfully.')
-    return redirect(url_for('dashboard',category_id=product.category_id))
+    if product:
+        product.no_of_buyed = 0 
+        current_user.cart.products.remove(product)
+        db.session.commit()
+        flash('Product removed from cart successfully.')
+        return redirect(url_for('dashboard', category_id=product.category_id))
+    else:
+        flash('Product not found.')
+        return redirect(url_for('dashboard'))
+
 
 # Route to view the cart
-@app.route('/cart')
+@app.route('/cart', methods=['GET', 'POST'])
 @login_required
 def show_cart():
+    if request.method == 'POST':
+        product_id = int(request.form['product_id'])
+        no_of_buyed = int(request.form['no_of_buyed'])
+        product = Product.query.get(product_id)
+        if product and no_of_buyed >= 1:
+            if no_of_buyed <= product.number: 
+                cart_product = next((cp for cp in current_user.cart.products if cp.id == product_id), None)
+                if cart_product:
+                    cart_product.no_of_buyed = no_of_buyed
+                    db.session.commit()
+            else:
+                flash('Cannot add more than available quantity.')
+
     cart_products = current_user.cart.products
-    total_price = sum(product.price for product in cart_products)
+    total_price = sum(product.price * product.no_of_buyed for product in cart_products if product.price is not None)
     return render_template('cart.html', cart_products=cart_products, total_price=total_price)
 
 
-
-
-
-# Route to place an order
 @app.route('/place-order', methods=['POST'])
 @login_required
 def place_order():
     cart_products = current_user.cart.products
-    order = Order(user=current_user, products=cart_products)
+
     
+    total_price = sum(product.price * product.no_of_buyed for product in cart_products if product.price is not None)
+
+    order = Order(user=current_user, products=cart_products, total_price=total_price)
     
     products_to_remove = []
     for product in cart_products:
-        product.number -= 1
-        products_to_remove.append(product)
+        if product.no_of_buyed > 0:
+            product.number -= product.no_of_buyed
+            products_to_remove.append(product)
 
-   
     for product in products_to_remove:
         current_user.cart.products.remove(product)
 
@@ -392,17 +411,39 @@ def place_order():
     return redirect(url_for('show_orders'))
 
 
-# Route to view user's orders
 @app.route('/my-orders')
 @login_required
 def show_orders():
     orders = current_user.orders
 
-    
     for order in orders:
-        order.total_price = sum(product.price for product in order.products)
+        order.total_price = sum(product.price * product.no_of_buyed for product in order.products if product.price is not None)
 
     return render_template('orders.html', orders=orders)
+
+
+@app.route('/update-quantity/<int:product_id>', methods=['POST'])
+@login_required
+def update_quantity(product_id):
+    product = Product.query.get(product_id)
+    
+    if not product:
+        flash('Product not found.')
+        return redirect(url_for('show_cart'))
+
+    change = request.form.get('change')
+
+    if change == 'increment':
+        if product.no_of_buyed < product.number:  
+            product.no_of_buyed += 1
+        else:
+            flash(f'Cannot order more than available quantity for {product.name}.')
+    elif change == 'decrement':
+        product.no_of_buyed = max(1, product.no_of_buyed - 1)
+
+    db.session.commit()
+
+    return redirect(url_for('show_cart'))
 
 
 
@@ -431,32 +472,28 @@ def search_products():
     return redirect('search')
 
 
-
 @app.route('/summary')
 @login_required
 def summary():
     if not current_user.is_admin:
         flash('You do not have permission to access this page.', 'warning')
         return redirect(url_for('dashboard'))
+    
     categories = Category.query.all()
 
-    
     products_dict = {}
     for category in categories:
-        
         products = Product.query.filter_by(category_id=category.id).order_by(desc(Product.timestamp_added)).all()
         non_expired_products = [product for product in products if product.expiry_date >= datetime.now().date()]
-
         products_dict[category.id] = non_expired_products
-    most_purchased_product, total_purchases = get_most_purchased_product()
-
     
+    most_purchased_products = get_most_purchased_products(limit=5)
+
     out_of_stock_products, expired_products = get_out_of_stock_or_expired_products()
     
     return render_template('summary.html', categories=categories, products_dict=products_dict,
-                           most_purchased_product=most_purchased_product, total_purchases=total_purchases,
+                           most_purchased_products=most_purchased_products,
                            out_of_stock_products=out_of_stock_products, expired_products=expired_products)
-
 
 
 

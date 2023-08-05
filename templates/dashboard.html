@@ -36,7 +36,8 @@
             {% endfor %}
             {% endif %}
             {% if products_dict[category.id] %}
-            <h2 class="text-center">{{ category.name }}</h2>
+            <h2 class="">{{ category.name }}</h2>
+            
             {% for product in products_dict[category.id] %}
             <div class="col-lg-2 col-md-4 col-6 mb-4">
                 {{ product_card(product, category, current_user) }}

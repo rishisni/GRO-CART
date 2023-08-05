@@ -1,3 +1,4 @@
+from email.policy import default
 from flask_sqlalchemy import SQLAlchemy
 from flask import Flask
 from flask_login import UserMixin
@@ -45,6 +46,7 @@ class Product(db.Model):
     number  = db.Column(db.Integer)
     timestamp_added = db.Column(db.DateTime, default=datetime.utcnow)
     category_id = db.Column(db.Integer, db.ForeignKey('category.id'))
+    no_of_buyed   = db.Column(db.Integer,default=0)
 
 
 class Cart(db.Model):
@@ -56,6 +58,11 @@ class Order(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
     products = db.relationship('Product', secondary='order_products', backref='order', lazy=True)
+    total_price = db.Column(db.Float, default=0)
+    def __init__(self, user, products, total_price):
+        self.user = user
+        self.products = products
+        self.total_price = total_price
  
 
 
@@ -70,18 +77,18 @@ class OrderProducts(db.Model):
     product_id = db.Column(db.Integer, db.ForeignKey('product.id'), primary_key=True)
 
 
-def get_most_purchased_product():
-   
-    most_purchased_product = db.session.query(
+def get_most_purchased_products(limit=5):
+    most_purchased_products = db.session.query(
         OrderProducts.product_id, func.count(OrderProducts.product_id).label('total')
-    ).group_by(OrderProducts.product_id).order_by(func.count(OrderProducts.product_id).desc()).first()
+    ).group_by(OrderProducts.product_id).order_by(func.count(OrderProducts.product_id).desc()).limit(limit).all()
 
-    if most_purchased_product:
-        product_id, total_purchases = most_purchased_product
-        most_purchased_product = Product.query.get(product_id)
-        return most_purchased_product, total_purchases
-    return None, 0
+    products_info = []
 
+    for product_id, total_purchases in most_purchased_products:
+        product = Product.query.get(product_id)
+        products_info.append((product, total_purchases))
+
+    return products_info
 
 def get_out_of_stock_or_expired_products():
     out_of_stock_products = Product.query.filter(Product.number <= 0).all()

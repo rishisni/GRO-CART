@@ -6,6 +6,14 @@
     </a>
 </li>
 {%- endmacro %}
+{% macro nav_item_cart(url,fonts,name) -%}
+<li class="nav-item-cart">
+    <a class="nav-link nav-link-big" style="color: white;" href="{{ url }}">
+        <i class="{{fonts}}"></i>
+        <span>&nbsp;{{name}}</span>
+    </a>
+</li>
+{%- endmacro %}
 
 {% macro navigation(current_user,user) -%}
 <nav id="myNavbar" class="navbar navbar-expand-lg navbar-light ">
@@ -42,9 +50,10 @@
                
                 {{ nav_item(url_for('home'),"fas fa-home","Home") }}
                 {{ nav_item(url_for('dashboard'),"fa-solid fa-cart-shopping","Products") }}
-                {{ nav_item(url_for('show_cart'),"fa-solid fa-bag-shopping","My Cart") }}
+                
                 {{ nav_item(url_for('show_orders'),"fas fa-user","Profile") }}
                 {{ nav_item(url_for('logout'),"fa fa-sign-out","Logout") }}
+                {{ nav_item_cart(url_for('show_cart'),"fa-solid fa-bag-shopping","My Cart") }}
                 {% endif %}
 
                 {% if not current_user.is_authenticated %}
