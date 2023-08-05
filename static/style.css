@@ -26,13 +26,14 @@
 }
 .nav-item-cart{
     background-color: #EA6969;
-    padding: 0.5px 5px;
+    padding: 0px 5px;
+    font-size:17px ;
     border-radius: 5px;
     color: white;
 }
 
 .nav-item-cart:hover{
-    background-color: #EA6969DD;
+    background-color: #FA6969;
 }
 
 #myCarousel {
@@ -55,9 +56,10 @@
 .product-image {
     width: 220px; /* Adjust the width as per your requirement */
     height: 150px; /* Adjust the height as per your requirement */
+    /* object-fit: cover;  */
     overflow: hidden;
-    border-radius: 2px;
-    padding: 4px;
+    border-radius: 5px;
+    border-bottom: #7EAA9299 solid 0.5px;
 }
 
 .product-image img {
@@ -66,6 +68,11 @@
     object-fit: fill;
 }
 
+.card-img-top{
+    border: #7EAA9299 solid ;
+    border-width:  0.5px;
+    border-radius: 5px;
+}
 
 .flash-messages {
     position: fixed;
@@ -83,7 +90,7 @@
     margin: 10px;
     padding: 10px;
     border-radius: 5px;
-    background: transparent;
+    background: #FFD9B7;
     position: fixed;
 }
 
@@ -97,6 +104,7 @@
     position: absolute;
     top: 5px;
     right: 5px;
+    margin: 3px;
 }
 
 
@@ -140,4 +148,12 @@
 .category-btn-group .btn:hover {
     background-color: #E1ECC8;
     transition: background-color 0.5s, border 0.5;
+}
+
+
+.card-profile{
+    background-color:#FFD9B7;
+    padding: 8px;
+    border: 1px solid #EA6969 ;
+    border-radius: 5px;
 }

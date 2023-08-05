@@ -3,13 +3,21 @@
 {% block content %}
 {% from 'macros/product.html' import product_card %}
 <div class="container mt-5">
-    <div class="row justify-content-lg-start">
+    {% if products %}
+    <div class="d-flex flex-wrap justify-content-start ">
        
         {% for product in products %}
+       
         {{ product_card(product,category,current_user) }}
         {% endfor %}
         
     </div>
+    {% else %}
+        <p>No Products Added &nbsp;&nbsp; <a href="{{ url_for('add_product', category_id=category.id) }}"
+                class="btn btn-outline-success">
+
+                Add&nbsp; <i class="fas fa-plus"></i> </a></p>
+        {% endif %}
 
 </div>
 

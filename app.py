@@ -341,7 +341,7 @@ def add_to_cart(product_id):
         current_user.cart.products.append(product)
         db.session.commit()
         flash('Product added to cart successfully.')
-        return redirect(url_for('dashboard', category_id=product.category_id))
+        return redirect(url_for('dashboard'))
     else:
         flash('Product not found.')
         return redirect(url_for('dashboard'))
@@ -357,7 +357,7 @@ def remove_from_cart(product_id):
         current_user.cart.products.remove(product)
         db.session.commit()
         flash('Product removed from cart successfully.')
-        return redirect(url_for('dashboard', category_id=product.category_id))
+        return redirect(url_for('dashboard'))
     else:
         flash('Product not found.')
         return redirect(url_for('dashboard'))

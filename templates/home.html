@@ -44,22 +44,30 @@
             every
             step of the way.</p>
 
-        {% if current_user.is_authenticated %}
+            {% if current_user.is_authenticated %}
 
-        <div class="col-lg-12 mt-4">
-            <h3 class="text-center">Your Favourite Picks</h3>
-            <div class="row justify-content-center">
-                {% for product in most_favourite_products %}
-                <div class="col-lg-6 col-md-4 col-sm-6 mb-4 mt-2">
-                    <div class="mx-5">
-                        {{ product_card(product, category, current_user) }}
+            <div class="col-lg-12 mt-4">
+                <h3 class="text-center">Your Favourite Picks</h3>
+                {% if most_favourite_products %}
+                <div class="row d-flex justify-content-start">
+                    {% for product in most_favourite_products %}
+                    <div class="col-lg-6 col-md-4 col-sm-6 mb-4 mt-2">
+                        <div class="mx-5">
+                            {{ product_card(product, category, current_user) }}
+                        </div>
                     </div>
+                    {% endfor %}
                 </div>
-                {% endfor %}
-               
+                {% else %}
+                <div class="text-center my-5">
+                    <p>You don't have any favorite products yet. <a href="{{ url_for('dashboard') }}" class="btn btn-outline-success">Continue Shopping</a></p>
+                    
+                </div>
+                {% endif %}
             </div>
-        </div>
-        {% endif %}
+            
+            {% endif %}
+            
     </div>
 
 <!-- </div> -->

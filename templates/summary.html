@@ -8,8 +8,11 @@
         <div class="col-md-12">
             <div class="card">
                 <div class="card-header">
-                    {% if most_purchased_products %}
                     <h3 class="text-center">Most Purchased Products</h3>
+                    
+                </div>
+                <div class="card-body">
+                    {% if most_purchased_products %}
                     <table class="table">
                         <thead>
                             <tr>
@@ -97,7 +100,7 @@
                             <th>Product ID</th>
                             <th>Category Name</th>
                             <th>Product Name</th>
-                            <th>Edit</th>
+                            <th>Delete</th>
                         </tr>
                     </thead>
                     <tbody>

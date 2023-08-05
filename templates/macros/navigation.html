@@ -18,24 +18,26 @@
 {% macro navigation(current_user,user) -%}
 <nav id="myNavbar" class="navbar navbar-expand-lg navbar-light ">
     <div class="container-fluid">
-        <img src="/static/images/logo.png" alt="E-Grocery" class="logo-img" style="width: 180px; height: 50px;">
-        <!-- <a class="navbar-brand" href="#">E-Grocery</a> -->
-        <form action="/search" method="post">
-            <div class="input-group">
-                <input class="form-control" type="search" name="search_query" placeholder="Search products..." aria-label="Search">
-                <button class="btn btn-outline-success" type="submit">Search</button>
-            </div>
-        </form>
+        <a href="{{url_for('home')}}"> <img src="/static/images/logo.png" alt="Gro-Cart" class="logo-img"
+                style="width: 180px; height: 45px;">
+        </a>
+
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
             aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
         </button>
-        <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
-
+        <div class="collapse navbar-collapse justify-content-around" id="navbarNav">
+            <form action="/search" method="post">
+                <div class="input-group">
+                    <input class="form-control" type="search" name="search_query" placeholder="Search products..."
+                        aria-label="Search" style="min-width: 25vw;">
+                    <button class="btn btn-outline-success" type="submit">Search</button>
+                </div>
+            </form>
 
             <ul class="navbar-nav ml-auto mr-2 ml-2">
 
-                
+
 
 
                 {% if current_user.is_authenticated and current_user.is_admin %}
@@ -43,39 +45,39 @@
                 {{ nav_item(url_for('show_category'),"fa-solid fa-eye","Show Category") }}
                 {{ nav_item(url_for('summary'),"fa-solid fa-chart-simple","Summary") }}
                 {{ nav_item(url_for('logout'),"fa fa-sign-out","Logout") }}
-               
+
                 {% endif %}
 
                 {% if current_user.is_authenticated and not current_user.is_admin %}
-               
+
                 {{ nav_item(url_for('home'),"fas fa-home","Home") }}
                 {{ nav_item(url_for('dashboard'),"fa-solid fa-cart-shopping","Products") }}
-                
+
                 {{ nav_item(url_for('show_orders'),"fas fa-user","Profile") }}
                 {{ nav_item(url_for('logout'),"fa fa-sign-out","Logout") }}
                 {{ nav_item_cart(url_for('show_cart'),"fa-solid fa-bag-shopping","My Cart") }}
                 {% endif %}
 
                 {% if not current_user.is_authenticated %}
-                
+
                 <li class="nav-item dropdown mr-2">
-                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown"
-                      aria-expanded="false">
-                      <i class="fa-solid fa-user"></i>&nbsp; Login
+                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button"
+                        data-bs-toggle="dropdown" aria-expanded="false">
+                        <i class="fa-solid fa-user"></i>&nbsp; Login
                     </a>
                     <ul class="dropdown-menu mr-2" aria-labelledby="navbarDropdown">
-                      <li><a class="dropdown-item" href="{{url_for('login')}}">Customer</a></li>
-                      <li><a class="dropdown-item" href="{{url_for('manager_login')}}">Manager</a></li>
-                      
-                      
+                        <li><a class="dropdown-item" href="{{url_for('login')}}">Customer</a></li>
+                        <li><a class="dropdown-item" href="{{url_for('manager_login')}}">Manager</a></li>
+
+
                     </ul>
-                  </li>
-                  {{ nav_item(url_for('register'),"fa fa-user-plus","Register") }}
+                </li>
+                {{ nav_item(url_for('register'),"fa fa-user-plus","Register") }}
                 {% endif %}
             </ul>
 
 
-            
+
 
         </div>
 

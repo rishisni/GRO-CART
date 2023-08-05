@@ -1,62 +1,61 @@
 {% macro product_card(product, category, current_user) %}
 
-<div class="col-lg-3 col-md-6 col-sm-6 col-12 mb-4 ">
 
-    <div class="card " style="width: 14rem;">
-        <div class="product-image">
-            <img src="{{ url_for('static', filename='uploads/product_images/' ~ product.photo) }}" class="card-img-top"
-                alt="{{ product.name }}">
-        </div>
+<div>
+<div class="card m-2 " style="width: 14rem;">
+    <img src="{{ url_for('static', filename='uploads/product_images/' ~ product.photo) }}" class="card-img-top product-image"
+    alt="{{ product.name }}">
 
 
-        <div class="card-body">
-            <h6 class="card-title text-lg-start">{{ product.name }}</h6>
+    <div class="card-body">
+        <h6 class="card-title text-lg-start">{{ product.name }}</h6>
 
-            <p class="card-text">{{ product.quantity }} {{ product.quantity_unit }}</p>
-            <a href="#collapse_{{ product.id }}" class="" style="text-decoration:none" data-bs-toggle="collapse"> View
-                Details <i class="fa-solid fa-arrow-down"></i></a>
-            <div id="collapse_{{ product.id }}" class="collapse">
-                <p class="card-text">Mfg. Date: {{ product.manufacturing_date }}</p>
-                <p class="card-text">Exp. Date: {{ product.expiry_date }}</p>
+        <p class="card-text" style="color:#555">{{ product.quantity }} {{ product.quantity_unit }}</p>
+        <a href="#collapse_{{ product.id }}" class="" style="text-decoration:none" data-bs-toggle="collapse"> View
+            Details <i class="fa-solid fa-arrow-down"></i></a>
+        <div id="collapse_{{ product.id }}" class="collapse">
+            <p class="card-text">Mfg. Date: {{ product.manufacturing_date }}</p>
+            <p class="card-text">Exp. Date: {{ product.expiry_date }}</p>
 
-                <p class="card-text">Product in Stock: {{ product.number }}</p>
-            </div>
-        </div>
-        <div class="card-footer">
-            {% if current_user.is_admin %}
-
-            <a href="{{ url_for('edit_product', product_id=product.id) }}" class="btn btn-outline-success"><i
-                    class="fas fa-edit"></i></a>
-            <form action="{{ url_for('delete_product', product_id=product.id) }}" method="POST"
-                style="display: inline;">
-                <button type="submit" class="btn btn-outline-danger"><i class="fas fa-trash"></i></button>
-            </form>
-
-            {% else %}
-           
-
-            <div class="d-flex justify-content-between align-items-center">
-                <span class="mr-2"><i class="fa-solid fa-indian-rupee-sign"></i>&nbsp;{{ product.price }}</span>
-                {% if product in current_user.cart.products %}
-                <form action="{{ url_for('remove_from_cart', product_id=product.id) }}" method="post">
-                    <button class="btn btn-outline-danger" type="submit">Remove &nbsp;<i class="fa-solid fa-trash"></i></button>
-                </form>
-                {% else %}
-                {% if product.number == 0 %}
-                <button class="btn btn-outline-disabled">Out Of Stock</button>
-                {% else %}
-                <form action="{{ url_for('add_to_cart', product_id=product.id) }}" method="post">
-                    <button class="btn btn-outline-success" type="submit">Add &nbsp;<i class="fa-solid fa-plus"></i></button>
-                </form>
-                {% endif %}
-                {% endif %}
-            </div>
-
-            
-           
-            {% endif %}
+            <p class="card-text">Product in Stock: {{ product.number }}</p>
         </div>
     </div>
+    <div class="card-footer" style="background-color:#FFD9B77A;">
+        {% if current_user.is_admin %}
+
+        <a href="{{ url_for('edit_product', product_id=product.id) }}" class="btn btn-outline-success"><i
+                class="fas fa-edit"></i></a>
+        <form action="{{ url_for('delete_product', product_id=product.id) }}" method="POST" style="display: inline;">
+            <button type="submit" class="btn btn-outline-danger"><i class="fas fa-trash"></i></button>
+        </form>
+
+        {% else %}
+
+
+        <div class="d-flex justify-content-between align-items-center">
+            <span class="mr-2"><i class="fa-solid fa-indian-rupee-sign"></i>&nbsp;{{ product.price }}</span>
+            {% if product in current_user.cart.products %}
+            <form action="{{ url_for('remove_from_cart', product_id=product.id) }}" method="post">
+                <button class="btn btn-outline-danger" type="submit">Remove &nbsp;<i
+                        class="fa-solid fa-trash"></i></button>
+            </form>
+            {% else %}
+            {% if product.number == 0 %}
+            <button class="btn btn-outline-disabled">Out Of Stock</button>
+            {% else %}
+            <form action="{{ url_for('add_to_cart', product_id=product.id) }}" method="post">
+                <button class="btn btn-outline-success" type="submit">Add &nbsp;<i
+                        class="fa-solid fa-plus"></i></button>
+            </form>
+            {% endif %}
+            {% endif %}
+        </div>
+
+
+
+        {% endif %}
+    </div>
+</div>
 </div>
 
 {% endmacro %}
@@ -68,52 +67,53 @@
 <div class="card mt-4">
     <div class="row g-0">
         <div class="col-sm-12 col-md-4">
-            <div class="product-image">
-                <img src="{{ url_for('static', filename='uploads/product_images/' ~ product.photo) }}"
-                    class="card-img-top" alt="{{ product.name }}">
-            </div>
+            <img src="{{ url_for('static', filename='uploads/product_images/' ~ product.photo) }}" class="card-img-top product-image"
+                alt="{{ product.name }}">
         </div>
         <div class="col-sm-12 col-md-8">
             <div class="card-body">
                 <div class="d-flex justify-content-between">
                     <h5 class="card-title">{{ product.name }}</h5>
                     <p class="card-text"><i class="fa-solid fa-indian-rupee-sign"></i>&nbsp; {{ product.price }}</p>
-                    <p class="card-text">{{ product.quantity }} {{ product.quantity_unit }}</p>
+                    <p class="card-text" style="color:#555">{{ product.quantity }} {{ product.quantity_unit }}</p>
                 </div>
                 <div class="d-flex justify-content-between">
                     <p class="card-text">Manufacturing Date: {{ product.manufacturing_date.strftime('%Y-%m-%d') }}</p>
                     <p class="card-text">Expiry Date: {{ product.expiry_date.strftime('%Y-%m-%d') }}</p>
                 </div>
-                <div class="row">
-                    <div class="col-md-6">
+                <div class="d-flex justify-content-between">
+                   
                         <form action="{{ url_for('remove_from_cart', product_id=product.id) }}" method="post">
-                            <button type="submit" class="btn btn-danger btn-sm">Remove from Cart</button>
+                            <button type="submit" class="btn btn-danger btn-sm">Remove &nbsp; <i class="fa-solid fa-trash"></i> </button>
                         </form>
-                    </div>
-                
-                    <div class="col-md-6">
-                        <form action="{{ url_for('update_quantity', product_id=product.id) }}" method="post" class="d-inline">
-                            <button type="submit" name="change" value="decrement" class="btn btn-outline-danger counter-btn"
-                                    style="padding: 2px 6px;border-top-right-radius: 0px;border-bottom-right-radius: 0px;">
+                   
+
+                   
+                        <form action="{{ url_for('update_quantity', product_id=product.id) }}" method="post"
+                            class="d-inline">
+                            <button type="submit" name="change" value="decrement"
+                                class="btn btn-outline-danger counter-btn"
+                                style="padding: 2px 6px;border-top-right-radius: 0px;border-bottom-right-radius: 0px;">
                                 <i class="fa-solid fa-minus"></i>
                             </button>
-                        </form>
-                
+                        
+
                         <span class="btn btn-outline-secondary"
-                              style="padding: 2px 8px; border-radius: 0px; margin: -5px; border-left: none; border-right: none; pointer-events: none;">
+                            style="padding: 2px 8px; border-radius: 0px; margin: -5px; border-left: none; border-right: none; pointer-events: none;">
                             {{ product.no_of_buyed }}
                         </span>
-                
-                        <form action="{{ url_for('update_quantity', product_id=product.id) }}" method="post" class="d-inline">
+
+                        <form action="{{ url_for('update_quantity', product_id=product.id) }}" method="post"
+                            class="d-inline">
                             <button type="submit" name="change" value="increment" class="btn btn-outline-success"
-                                    style="padding: 2px 6px;border-top-left-radius: 0px;border-bottom-left-radius: 0px;">
+                                style="padding: 2px 6px;border-top-left-radius: 0px;border-bottom-left-radius: 0px;">
                                 <i class="fa-solid fa-plus"></i>
                             </button>
                         </form>
-                    </div>
+                    
                 </div>
-                
-                
+
+
 
 
             </div>
