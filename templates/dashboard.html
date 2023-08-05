@@ -42,12 +42,13 @@
             <div class="col-lg-2 col-md-4 col-6 mb-4">
                 {{ product_card(product, category, current_user) }}
             </div>
-            {% else %}
-            <p>No products found for this category.</p>
-            {% endfor %}
             
+            {% endfor %}
+            {% else %}
+            <p class="category-no-products-msg" >No products found for this category.</p>
             {% endif %}
         </div>
+        
     </div>
     {% endfor %}
 </div>
@@ -55,6 +56,7 @@
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script>
     $(document).ready(function () {
+        $(".category-no-products-msg").hide()
         $(".category-btn").click(function () {
             const categoryId = $(this).data("category");
             $(".category-products").hide();
@@ -64,8 +66,10 @@
 
             if (categoryId === "all") {
                 $(".category-products").show();
+                $(".category-no-products-msg").hide()
             } else {
                 $(`#category-${categoryId}`).show();
+                $(".category-no-products-msg").show()
             }
         });
     });

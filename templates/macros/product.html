@@ -1,8 +1,8 @@
 {% macro product_card(product, category, current_user) %}
 
-<div class="col-lg-3 col-md-6 col-sm-6 col-12 mb-4">
+<div class="col-lg-3 col-md-6 col-sm-6 col-12 mb-4 ">
 
-    <div class="card" style="width: 14rem;">
+    <div class="card " style="width: 14rem;">
         <div class="product-image">
             <img src="{{ url_for('static', filename='uploads/product_images/' ~ product.photo) }}" class="card-img-top"
                 alt="{{ product.name }}">
@@ -33,25 +33,27 @@
             </form>
 
             {% else %}
-            {% if product in current_user.cart.products %}
-            <form action="{{ url_for('remove_from_cart', product_id=product.id) }}" method="post">
-                <button class="btn btn-outline-danger" type="submit">Remove from Cart</button>
-            </form>
-            {% else %}
-            {% if product.number == 0 %}
-            <button class="btn btn-outline-disabled">Out Of Stock</button>
-            {% else %}
+           
 
             <div class="d-flex justify-content-between align-items-center">
                 <span class="mr-2"><i class="fa-solid fa-indian-rupee-sign"></i>&nbsp;{{ product.price }}</span>
-
-                <form action="{{ url_for('add_to_cart', product_id=product.id) }}" method="post">
-                    <button class="btn btn-outline-success" type="submit"><i class="fa-solid fa-plus"></i></button>
+                {% if product in current_user.cart.products %}
+                <form action="{{ url_for('remove_from_cart', product_id=product.id) }}" method="post">
+                    <button class="btn btn-outline-danger" type="submit">Remove &nbsp;<i class="fa-solid fa-trash"></i></button>
                 </form>
+                {% else %}
+                {% if product.number == 0 %}
+                <button class="btn btn-outline-disabled">Out Of Stock</button>
+                {% else %}
+                <form action="{{ url_for('add_to_cart', product_id=product.id) }}" method="post">
+                    <button class="btn btn-outline-success" type="submit">Add &nbsp;<i class="fa-solid fa-plus"></i></button>
+                </form>
+                {% endif %}
+                {% endif %}
             </div>
 
-            {% endif %}
-            {% endif %}
+            
+           
             {% endif %}
         </div>
     </div>
